@@ -1,0 +1,73 @@
+public interface IObserver
+{
+    void Update(int temperature);
+}
+
+public interface ISubject
+{
+    void RegisterObserver(IObserver observer);  
+    void RemoveObserver(IObserver observer);    
+    void NotifyObservers();                     
+}
+
+public class WeatherStation : ISubject
+{
+    private List<IObserver> observers;
+    private int temperature;
+
+    public WeatherStation()
+    {
+        observers = new List<IObserver>();
+    }
+
+    public void RegisterObserver(IObserver observer)
+    {
+        observers.Add(observer);
+    }
+
+    public void UnRegObserver(IObserver observer)
+    {
+        observers.Remove(observer);
+    }
+
+    public void NotifyObservers()
+    {
+        foreach (IObserver item in observers)
+        {
+            item.Update(0);
+        }
+    }
+
+    public void SetTemperature(int newTemperature)
+    {
+        temperature = newTemperature;
+        NotifyObservers();
+    }
+}
+
+public class WeatherDisplay : IObserver
+{
+    public void Update(int temperature)
+    {
+        Console.WriteLine(" temperature changed to: {temperature}°C");
+    }
+}
+
+public class Program
+{
+    static void Main(string[] args)
+    {
+
+        WeatherStation weatherStation = new WeatherStation();
+        WeatherDisplay weatherDisplay = new WeatherDisplay();
+
+        weatherStation.RegisterObserver(weatherDisplay);
+
+        while (true)
+        {
+            Random rnd = new Random();
+            weatherStation.SetTemperature(rnd.Next(-30, 50));
+            Thread.Sleep(3000);
+        }
+    }
+}
