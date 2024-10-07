@@ -1,0 +1,65 @@
+public interface IShippingStrategy
+{
+    double CalculateShippingCost(double weight, double distance);
+}
+
+public class StandartShippingDelivery : IShippingStrategy
+{
+    public double CalculateShippingCost(double weight, double distance)
+    {
+        return (weight * 1.5 + distance);
+    }
+}
+
+public class ExpressShippingDelivery : IShippingStrategy
+{
+    public double CalculateShippingCost(double weight, double distance)
+    {
+        return (weight * 1.5 + distance) + 100;
+    }
+}
+
+public class InternationalShippingDelivery : IShippingStrategy
+{
+    public double CalculateShippingCost(double weight, double distance)
+    {
+        return (weight * 2 + distance) + 200;
+    }
+}
+
+public class DeliveryContext
+{
+    private IShippingStrategy shipping;
+
+    public DeliveryContext(IShippingStrategy shipping)
+    {
+        this.shipping = shipping;
+    }
+
+    public double CalculateCost(double weight, double distance)
+    {
+        if (shipping != null)
+        {
+            Console.WriteLine("Метод Доставки не определен!");
+        }
+        return shipping.CalculateShippingCost(weight, distance);
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        DeliveryContext delivery = null;
+        int type_Delivery = 1;
+
+        if (type_Delivery == 1)
+        {
+            delivery = new DeliveryContext(new StandartShippingDelivery());
+        }
+
+        var cost = delivery.CalculateCost(700, 50);
+
+        Console.WriteLine("Cost of delivery:", cost);
+    }
+}
